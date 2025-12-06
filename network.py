@@ -16,12 +16,12 @@ class QR_DQN(nn.Module):
 
 # C51 算法
 class C51(nn.Module):
-    def __init(self):
+    def __init__(self, atom_num):
         super(C51, self).__init__()
         self.seq = nn.Sequential(
             nn.Linear(16, 64),
             nn.ReLU(),
-            nn.Linear(64, 51)
+            nn.Linear(64, atom_num)
         )
     def forward(self, x):
         return F.softmax(self.seq(x), dim=-1)

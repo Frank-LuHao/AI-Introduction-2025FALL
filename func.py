@@ -1,6 +1,11 @@
 import torch.nn.functional as F
 import torch as th
 
+def c51_loss(predicted_distribution, target_distribution):
+    return -th.mean(target_distribution * th.log(predicted_distribution + 1e-10))
+    # return F.cross_entropy(target_distribution, predicted_distribution, reduction='mean') # th 中的 cross_entropy 函数好像和理解中的不太一样 ？
+    # return F.mse_loss(target_distribution, predicted_distribution, reduction='mean')  # 既然概率都基于相同的atoms上，那为什么不使用mse_loss ?
+
 def qtd_loss(predicted_quantile, target_quantile, tau):
     shape = predicted_quantile.shape
     x = target_quantile.unsqueeze(1) - predicted_quantile.unsqueeze(2)

@@ -1,7 +1,7 @@
-from network import QR_DQN
+from network import QR_DQN, C51
 import torch as th
 import torch.optim as optim
-from func import qtd_loss
+from func import qtd_loss, c51_loss
 import tqdm
 import matplotlib.pyplot as plt
 import scipy.stats as stats
@@ -16,6 +16,9 @@ def train(algo):
         QR_DQN_network.train()
         for _ in tqdm.tqdm(range(10000)):
             x = th.ones((batch_size, 16,), dtype=th.float)
+
+            # same value test
+            # reward = th.zeros((batch_size, 16)) + 1
 
             # uniform test
             # reward = th.rand((batch_size, 1)).expand(-1, 16)
@@ -53,6 +56,47 @@ def train(algo):
         plt.show()
 
     if algo == 'C51':
-        C51_network = C51()
-        optimizer = optim.Adam(C51_network.parameters(), lr=0.01)
-        batch_size = 32
+        v_max = -5
+        v_min = 5
+        atom_num = 16
+        batch_size = 64
+        atoms = th.linspace(v_min, v_max, atom_num)
+        C51_network = C51(atom_num)
+        optimizer = optim.Adam(C51_network.parameters(), lr=0.001)
+
+        C51_network.train()
+        for i in tqdm.tqdm(range(10000)):
+            x = th.ones((batch_size, 16,), dtype=th.float)
+
+            # same value test
+            # reward = th.zeros((1, 16))
+            # reward[0][3] = 1
+            # reward = reward.expand(batch_size, 16)
+
+            # same value test2
+            # reward = th.tensor([[0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625,
+            # 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625]]).expand(batch_size, 16)
+
+            # uniform test
+            reward = th.zeros((batch_size, atom_num))
+            for i in range(batch_size):
+                idx = th.randint(0, atom_num, (1,)).item()
+                reward[i][idx] = 1
+
+            # todo: normal test
+
+            # 投影转换
+            # 由于这里 reward 直接就是 target distribution, 所以省略这个步骤
+
+            pred_distribution = C51_network(x)
+            loss = c51_loss(pred_distribution, reward)
+            # print(f"i : {loss}")
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        C51_network.eval()
+        x = th.ones((1, 16,), dtype=th.float)
+        pred_distribution = C51_network(x).squeeze()
+        print(pred_distribution)
