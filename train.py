@@ -1,7 +1,7 @@
-from network import QR_DQN, C51
+from network import QR_DQN, C51, IQN
 import torch as th
 import torch.optim as optim
-from func import qtd_loss, c51_loss
+from func import qtd_loss, c51_loss, iqn_loss
 import tqdm
 import matplotlib.pyplot as plt
 import scipy.stats as stats
@@ -56,8 +56,8 @@ def train(algo):
         plt.show()
 
     if algo == 'C51':
-        v_max = -5
-        v_min = 5
+        v_min = -5
+        v_max = 5
         atom_num = 16
         batch_size = 64
         atoms = th.linspace(v_min, v_max, atom_num)
@@ -79,9 +79,9 @@ def train(algo):
 
             # uniform test
             reward = th.zeros((batch_size, atom_num))
-            for i in range(batch_size):
+            for j in range(batch_size):
                 idx = th.randint(0, atom_num, (1,)).item()
-                reward[i][idx] = 1
+                reward[j][idx] = 1
 
             # todo: normal test
 
@@ -100,3 +100,42 @@ def train(algo):
         x = th.ones((1, 16,), dtype=th.float)
         pred_distribution = C51_network(x).squeeze()
         print(pred_distribution)
+
+    if algo == "IQN":
+        batch_size = 32
+        N = 8
+        N_hat = 8
+        IQN_network = IQN()
+        optimizer = optim.Adam(IQN_network.parameters(), lr=0.001)
+
+        IQN_network.train()
+        for _ in tqdm.tqdm(range(10000)):
+            x = th.ones((batch_size, 16,), dtype=th.float)
+            tau = th.rand((batch_size, N))
+
+            # 单点分布
+            # reward = th.zeros((batch_size, N_hat)) + 1
+
+            # uniform 分布
+            # reward = th.rand(batch_size, N_hat)
+
+            # Guass 分布
+            reward = th.randn(batch_size, N_hat)
+
+            pred_value = IQN_network(x, tau)
+            assert pred_value.shape == (batch_size, N, 1)
+            loss = iqn_loss(pred_value.squeeze(2), reward, tau)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        IQN_network.eval()
+        x = th.ones((1, 16,), dtype=th.float)
+        tau = th.linspace(0, 1, 10).unsqueeze(0)
+        # print(tau)
+        # 计算正态分布的分位数
+        normal_quantiles = stats.norm.ppf(tau.squeeze().numpy())
+        print(f'tau: {normal_quantiles}')
+        pred_value = IQN_network(x, tau)
+        print(pred_value)

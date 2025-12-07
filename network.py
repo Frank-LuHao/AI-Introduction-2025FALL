@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import torch as th
 
 # QR_DQN 算法
 class QR_DQN(nn.Module):
@@ -25,3 +26,18 @@ class C51(nn.Module):
         )
     def forward(self, x):
         return F.softmax(self.seq(x), dim=-1)
+
+# IQN 算法
+class IQN(nn.Module):
+    def __init__(self):
+        super(IQN, self).__init__()
+        self.phi = nn.Linear(16, 16)
+        self.seq = nn.Sequential(
+            nn.Linear(16, 64),
+            nn.ReLU(),
+            nn.Linear(64, 1)
+        )
+
+    def forward(self, x, tau):
+        quantile_embed = self.phi(th.cos(th.pi * th.arange(0, 16) * tau.unsqueeze(-1)))
+        return self.seq(x.unsqueeze(1) * quantile_embed)
