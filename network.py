@@ -4,12 +4,12 @@ import torch as th
 
 # QR_DQN 算法
 class QR_DQN(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim, output_dim):
         super(QR_DQN, self).__init__()
         self.seq = nn.Sequential(
-            nn.Linear(16, 64),
+            nn.Linear(input_dim, 64),
             nn.ReLU(),
-            nn.Linear(64, 16)
+            nn.Linear(64, output_dim)
         )
 
     def forward(self, x):

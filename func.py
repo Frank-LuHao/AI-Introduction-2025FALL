@@ -1,4 +1,3 @@
-import torch.nn.functional as F
 import torch as th
 
 def c51_loss(predicted_distribution, target_distribution):
