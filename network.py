@@ -3,9 +3,9 @@ import torch.nn.functional as F
 import torch as th
 
 # QR_DQN 算法
-class QR_DQN(nn.Module):
+class QR_DQN_net(nn.Module):
     def __init__(self, input_dim, output_dim):
-        super(QR_DQN, self).__init__()
+        super(QR_DQN_net, self).__init__()
         self.seq = nn.Sequential(
             nn.Linear(input_dim, 64),
             nn.ReLU(),
@@ -16,9 +16,9 @@ class QR_DQN(nn.Module):
         return self.seq(x)
 
 # C51 算法
-class C51(nn.Module):
+class C51_net(nn.Module):
     def __init__(self, atom_num):
-        super(C51, self).__init__()
+        super(C51_net, self).__init__()
         self.seq = nn.Sequential(
             nn.Linear(16, 64),
             nn.ReLU(),
@@ -28,9 +28,9 @@ class C51(nn.Module):
         return F.softmax(self.seq(x), dim=-1)
 
 # IQN 算法
-class IQN(nn.Module):
+class IQN_net(nn.Module):
     def __init__(self):
-        super(IQN, self).__init__()
+        super(IQN_net, self).__init__()
         self.phi = nn.Linear(16, 16)
         self.seq = nn.Sequential(
             nn.Linear(16, 64),

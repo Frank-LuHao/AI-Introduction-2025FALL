@@ -1,5 +1,22 @@
 import torch as th
 
+# reward 重构
+def adjust(next_obs, reward, min_x, max_x):
+    x = next_obs[0]
+    speed = next_obs[1]
+    if x > max_x:
+        reward += (x - max_x) * 10
+        max_x = x
+    elif x < min_x:
+        reward += (min_x - x) * 10
+        min_x = x
+    if abs(speed) > 0.01:
+        reward += abs(speed) * 5
+    else:
+        reward -= 1
+
+    return reward, max_x, min_x
+
 def c51_loss(predicted_distribution, target_distribution):
     return -th.mean(target_distribution * th.log(predicted_distribution + 1e-10))
     # return F.cross_entropy(target_distribution, predicted_distribution, reduction='mean') # th 中的 cross_entropy 函数好像和理解中的不太一样 ？

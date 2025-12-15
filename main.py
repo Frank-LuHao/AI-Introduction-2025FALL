@@ -13,4 +13,10 @@ if __name__ == "__main__":
 
     # experiment2 : learning in a simple game environment
     exp2 = experiment2(device)
-    exp2.train(algo[1])
+    exp2.set_Algo(algo[1])
+    # exp2.train(3)
+    exp2.vis()
+
+    # exp2.set_Env(True)
+    # exp2.set_Algo(algo[1])
+    # exp2.test()

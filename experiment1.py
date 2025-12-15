@@ -1,4 +1,4 @@
-from network import QR_DQN, C51, IQN
+from network import QR_DQN_net, C51_net, IQN_net
 import torch as th
 import torch.optim as optim
 from func import qtd_loss, c51_loss, iqn_loss
@@ -9,7 +9,7 @@ import scipy.stats as stats
 class experiment1:
     def train(self, algo):
         if algo == 'QR_DQN':
-            QR_DQN_network = QR_DQN(input_dim=16, output_dim=16)
+            QR_DQN_network = QR_DQN_net(input_dim=16, output_dim=16)
             optimizer = optim.Adam(QR_DQN_network.parameters(), lr=0.001)
             tau = th.tensor([i/32 for i in range(1, 32, 2)])
             batch_size = 64
@@ -62,7 +62,7 @@ class experiment1:
             atom_num = 16
             batch_size = 64
             atoms = th.linspace(v_min, v_max, atom_num)
-            C51_network = C51(atom_num)
+            C51_network = C51_net(atom_num)
             optimizer = optim.Adam(C51_network.parameters(), lr=0.001)
 
             C51_network.train()
@@ -106,7 +106,7 @@ class experiment1:
             batch_size = 32
             N = 8
             N_hat = 8
-            IQN_network = IQN()
+            IQN_network = IQN_net()
             optimizer = optim.Adam(IQN_network.parameters(), lr=0.001)
 
             IQN_network.train()
