@@ -17,10 +17,10 @@ class QR_DQN_net(nn.Module):
 
 # C51 算法
 class C51_net(nn.Module):
-    def __init__(self, atom_num):
+    def __init__(self, input_dim, atom_num):
         super(C51_net, self).__init__()
         self.seq = nn.Sequential(
-            nn.Linear(16, 64),
+            nn.Linear(input_dim, 64),
             nn.ReLU(),
             nn.Linear(64, atom_num)
         )
@@ -29,15 +29,16 @@ class C51_net(nn.Module):
 
 # IQN 算法
 class IQN_net(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim):
         super(IQN_net, self).__init__()
-        self.phi = nn.Linear(16, 16)
+        self.input_dim = input_dim
+        self.phi = nn.Linear(self.input_dim, self.input_dim)
         self.seq = nn.Sequential(
-            nn.Linear(16, 64),
+            nn.Linear(self.input_dim, 32),
             nn.ReLU(),
-            nn.Linear(64, 1)
+            nn.Linear(32, 1)
         )
 
     def forward(self, x, tau):
-        quantile_embed = self.phi(th.cos(th.pi * th.arange(0, 16) * tau.unsqueeze(-1)))
+        quantile_embed = self.phi(th.cos(th.pi * th.arange(0, self.input_dim) * tau.unsqueeze(-1)))
         return self.seq(x.unsqueeze(1) * quantile_embed)

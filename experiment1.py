@@ -62,7 +62,7 @@ class experiment1:
             atom_num = 16
             batch_size = 64
             atoms = th.linspace(v_min, v_max, atom_num)
-            C51_network = C51_net(atom_num)
+            C51_network = C51_net(16, atom_num)
             optimizer = optim.Adam(C51_network.parameters(), lr=0.001)
 
             C51_network.train()
@@ -106,7 +106,7 @@ class experiment1:
             batch_size = 32
             N = 8
             N_hat = 8
-            IQN_network = IQN_net()
+            IQN_network = IQN_net(16)
             optimizer = optim.Adam(IQN_network.parameters(), lr=0.001)
 
             IQN_network.train()
