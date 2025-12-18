@@ -16,7 +16,8 @@ class experiment2:
         if not render:
             self.env = gymnasium.make("MountainCar-v0")
         else:
-            self.env = gymnasium.make("MountainCar-v0", render_mode="human")
+            self.env = gymnasium.make("MountainCar-v0", render_mode="rgb_array")
+            self.env = gymnasium.wrappers.RecordVideo(self.env, f"./result/video/{self.algo_name}")
 
     def set_Algo(self):
         if self.algo_name == "QR_DQN":

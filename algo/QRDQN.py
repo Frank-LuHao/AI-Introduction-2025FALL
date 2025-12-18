@@ -1,9 +1,9 @@
 import torch as th
-from network import QR_DQN_net
+from utils.network import QR_DQN_net
 import torch.optim as optim
 import tqdm
 import numpy as np
-from func import qtd_loss, adjust
+from utils.func import qtd_loss, adjust
 
 class QRDQN:
     def __init__(self, env, device):

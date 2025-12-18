@@ -1,9 +1,9 @@
 import torch as th
-from network import IQN_net
+from utils.network import IQN_net
 import torch.optim as optim
 import tqdm
 import numpy as np
-from func import iqn_loss, adjust
+from utils.func import iqn_loss, adjust
 
 class IQN:
     def __init__(self, env, device):

@@ -1,9 +1,9 @@
 import torch as th
-from network import C51_net
+from utils.network import C51_net
 import torch.optim as optim
 import tqdm
 import numpy as np
-from func import c51_loss, adjust
+from utils.func import c51_loss, adjust
 
 class C51:
     def __init__(self, env, device):
