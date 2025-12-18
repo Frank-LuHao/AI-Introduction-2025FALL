@@ -8,7 +8,7 @@ from func import c51_loss, adjust
 class C51:
     def __init__(self, env, device):
         self.env = env
-        self.epoch = 200
+        self.epoch = 300
         self.gamma = 0.99
         self.device = device
         self.v_min = th.tensor(-200.0).to(self.device)
@@ -41,7 +41,7 @@ class C51:
                         pred_pd = self.C51_network(x).squeeze()
                     pred_q.append((pred_pd * self.atoms).sum())
                 action = th.argmax(th.tensor(pred_q)).item()
-                if th.rand(1).item() < 0.3:
+                if th.rand(1).item() < 0.1:
                     action = np.random.randint(0, 3)
 
                 # step
@@ -104,7 +104,6 @@ class C51:
                 x = th.from_numpy(np.concatenate([observation, np.array([a], dtype=np.float32)])).unsqueeze(0).to(self.device)
                 with th.no_grad():
                     pred_pd = self.C51_network(x).squeeze()
-                print(f'pred_pd:{pred_pd}')
                 pred_q.append((pred_pd * self.atoms).sum())
             action = th.argmax(th.tensor(pred_q)).item()
 

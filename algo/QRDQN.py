@@ -25,7 +25,7 @@ class QRDQN:
     def train(self):
         self.QR_DQN_network.train()
         total_reward_list = []
-        for _ in tqdm.tqdm(range(self.epoch)):
+        for i in tqdm.tqdm(range(self.epoch)):
             observation, _ = self.env.reset()
             episode_over = False
             max_x = min_x = observation[0]
@@ -72,11 +72,12 @@ class QRDQN:
                 observation = next_observation
                 episode_over = terminated or truncated
 
-            total_reward = self.test()
-            if total_reward > self.best_reward:
-                self.best_reward = total_reward
-                self.save()
-            total_reward_list.append(total_reward)
+            if (i + 1) % 10 == 0:
+                total_reward = self.test()
+                if total_reward > self.best_reward:
+                    self.best_reward = total_reward
+                    self.save()
+                total_reward_list.append(total_reward)
 
         return total_reward_list
 
