@@ -23,7 +23,7 @@ class C51:
         th.save(self.C51_network.state_dict(), "./result/model/C51_net.pth")
 
     def load(self):
-        self.C51_network.load_state_dict(th.load("./result/model/C51_net.pth"))
+        self.C51_network.load_state_dict(th.load("./result/model/C51_net.pth", map_location=self.device))
 
     def train(self):
         self.C51_network.train()

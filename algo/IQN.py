@@ -21,7 +21,7 @@ class IQN:
         th.save(self.IQN_network.state_dict(), "./result/model/IQN_net.pth")
 
     def load(self):
-        self.IQN_network.load_state_dict(th.load("./result/model/IQN_net.pth"))
+        self.IQN_network.load_state_dict(th.load("./result/model/IQN_net.pth", map_location=self.device))
 
     def train(self):
         self.IQN_network.train()

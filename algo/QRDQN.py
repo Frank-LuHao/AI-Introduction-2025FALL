@@ -20,7 +20,7 @@ class QRDQN:
         th.save(self.QR_DQN_network.state_dict(), "./result/model/QR_DQN_net.pth")
 
     def load(self):
-        self.QR_DQN_network.load_state_dict(th.load("./result/model/QR_DQN_net.pth"))
+        self.QR_DQN_network.load_state_dict(th.load("./result/model/QR_DQN_net.pth", map_location=self.device))
 
     def train(self):
         self.QR_DQN_network.train()
